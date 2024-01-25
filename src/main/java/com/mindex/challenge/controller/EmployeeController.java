@@ -1,6 +1,8 @@
 package com.mindex.challenge.controller;
 
 import com.mindex.challenge.data.Employee;
+import com.mindex.challenge.model.ReportingStructureModel;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -8,11 +10,14 @@ import org.springframework.web.bind.annotation.*;
 public interface EmployeeController {
 
     @PostMapping("/create")
-    Employee create(@RequestBody Employee e);
+    ResponseEntity<Employee> create(@RequestBody Employee e);
 
     @GetMapping("/read/{id}")
-    Employee read(@PathVariable String id);
+    ResponseEntity<Employee> read(@PathVariable String id);
 
     @PutMapping("/update")
-    Employee update(@PathVariable String id, @RequestBody Employee e);
+    ResponseEntity<Employee> update(@PathVariable String id, @RequestBody Employee e);
+
+    @GetMapping("/read/{id}/reporting")
+    ResponseEntity<ReportingStructureModel> readReportingStructure(@PathVariable String id);
 }

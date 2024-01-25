@@ -2,8 +2,10 @@ package com.mindex.challenge.service;
 
 import com.mindex.challenge.data.Employee;
 
+import java.util.Optional;
+
 public interface EmployeeService {
-    Employee create(Employee employee);
-    Employee read(String id);
-    Employee update(Employee employee);
+    Optional<Employee> create(Employee employee);
+    Optional<Employee> read(String id);
+    Optional<Employee> update(Employee employee);
 }
