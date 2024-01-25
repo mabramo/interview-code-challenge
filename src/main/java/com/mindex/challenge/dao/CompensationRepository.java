@@ -4,7 +4,9 @@ import com.mindex.challenge.data.Compensation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface CompensationRepository extends MongoRepository<Compensation, String> {
-    Compensation findByEmployeeId(String employeeId);
+    Optional<Compensation> findByEmployeeId(String employeeId);
 }

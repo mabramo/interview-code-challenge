@@ -1,0 +1,22 @@
+[
+  {
+    "employeeId" : "16a596ae-edd3-4847-99fe-c4518e82c86f",
+    "salary" :  12345,
+    "effectiveDate": "2020-01-25T17:59:31+0000"
+  },
+  {
+    "employeeId" : "b7839309-3348-463b-a7e3-5de1c168beb3",
+    "salary" :  2223,
+    "effectiveDate": "2021-01-25T17:59:31+0000"
+  },
+  {
+    "employeeId" : "03aa1462-ffa9-4978-901b-7c001562cf6f",
+    "salary" :  3334,
+    "effectiveDate": "2022-01-25T17:59:31+0000"
+  },
+  {
+    "employeeId" : "62c1084e-6e34-4630-93fd-9153afb65309",
+    "salary" :  4445,
+    "effectiveDate": "2023-01-25T17:59:31+0000"
+  }
+]

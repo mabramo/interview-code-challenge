@@ -2,7 +2,6 @@ package com.mindex.challenge.service.impl;
 
 import com.mindex.challenge.dao.CompensationRepository;
 import com.mindex.challenge.dao.EmployeeRepository;
-import com.mindex.challenge.data.Compensation;
 import com.mindex.challenge.data.Employee;
 import com.mindex.challenge.model.ReportingStructureModel;
 import com.mindex.challenge.service.EmployeeService;
@@ -11,8 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Optional;
+import java.util.Queue;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,16 +46,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Optional<Employee> read(String id) {
         LOG.debug("Reading employee with id [{}]", id);
 
-        employeeRepository.findAll().forEach(o -> System.out.println(o.getEmployeeId()));
+        Optional<Employee> employee = employeeRepository.findByEmployeeId(id);
 
-        Employee employee = employeeRepository.findByEmployeeId(id);
-
-        if (employee == null) {
+        if (!employee.isPresent()) {
             LOG.info("Invalid employeeId: [{}]", id);
             return Optional.empty();
+        } else {
+            return employee;
         }
-
-        return Optional.of(employee);
     }
 
     @Override
@@ -74,37 +74,6 @@ public class EmployeeServiceImpl implements EmployeeService {
             return Optional.empty();
         } else {
             return Optional.of(new ReportingStructureModel(optionalEmployee.get(), countReportees(optionalEmployee.get())));
-        }
-    }
-
-    @Override
-    public Optional<Compensation> createCompensation(String id, Compensation compensation) {
-        LOG.debug("Creating compensation for employee with id [{}]", id);
-
-        Employee employee = employeeRepository.findByEmployeeId(id);
-
-        if (employee == null) {
-            LOG.info("Employee with id [{}] was not found. Compensation will not be created.", id);
-            return Optional.empty();
-        } else {
-            LOG.debug("Found employee with id [{}] while creating compensation", id);
-            compensation = compensationRepository.insert(compensation);
-            return Optional.of(compensation);
-        }
-    }
-
-    @Override
-    public Optional<Compensation> readCompensation(String id) {
-        LOG.debug("Reading compensation for employee with id [{}]", id);
-
-        Compensation compensation = compensationRepository.findByEmployeeId(id);
-
-        if(compensation == null){
-            LOG.info("Compensation information for employee with id [{}] not found", id);
-            return Optional.empty();
-        } else {
-            LOG.debug("Found compensation for employee with id [{}]", id);
-            return Optional.of(compensation);
         }
     }
 

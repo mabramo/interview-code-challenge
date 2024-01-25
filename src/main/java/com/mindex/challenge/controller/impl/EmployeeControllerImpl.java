@@ -57,24 +57,4 @@ public class EmployeeControllerImpl implements EmployeeController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 
     }
-
-    @Override
-    public ResponseEntity<Compensation> createCompensation(String id, Compensation compensation) {
-        LOG.debug("Received compensation create request for id [{}]", id);
-
-        Optional<Compensation> opt = employeeService.createCompensation(id, compensation);
-
-        return opt.map(comp -> new ResponseEntity<>(comp, HttpStatus.CREATED))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.FORBIDDEN));
-    }
-
-    @Override
-    public ResponseEntity<Compensation> readCompensation(String id) {
-        LOG.debug("Received compensation read request for id [{}]", id);
-
-        Optional<Compensation> opt = employeeService.readCompensation(id);
-
-        return opt.map(comp -> new ResponseEntity<>(comp, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
 }

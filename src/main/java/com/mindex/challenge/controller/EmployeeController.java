@@ -20,12 +20,12 @@ public interface EmployeeController {
     @PutMapping("/{id}")
     ResponseEntity<Employee> update(@PathVariable String id, @RequestBody Employee e);
 
+    /**
+     * Retrieve the reporting structure for an employee
+     *
+     * @param id an employee id
+     * @return the reporting structure if employee exists, NOT_FOUND if employee does not exist
+     */
     @GetMapping("/{id}/reporting")
     ResponseEntity<ReportingStructureModel> readReportingStructure(@PathVariable String id);
-
-    @PostMapping("/{id}/compensation")
-    ResponseEntity<Compensation> createCompensation(@PathVariable String id, @RequestBody Compensation compensation);
-
-    @GetMapping("/{id}/compensation")
-    ResponseEntity<Compensation> readCompensation(@PathVariable String id);
 }

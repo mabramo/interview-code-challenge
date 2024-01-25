@@ -11,6 +11,5 @@ public interface EmployeeService {
     Optional<Employee> read(String id);
     Optional<Employee> update(Employee employee);
     Optional<ReportingStructureModel> readReportingStructure(String id);
-    Optional<Compensation> createCompensation(String id, Compensation compensation);
-    Optional<Compensation> readCompensation(String id);
+
 }
