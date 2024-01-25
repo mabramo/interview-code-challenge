@@ -2,14 +2,16 @@ package com.mindex.challenge.service.impl;
 
 import com.mindex.challenge.dao.EmployeeRepository;
 import com.mindex.challenge.data.Employee;
+import com.mindex.challenge.model.ReportingStructureModel;
 import com.mindex.challenge.service.EmployeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-import java.util.UUID;
+import javax.swing.text.html.Option;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -19,7 +21,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
 
     @Autowired
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository){
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
 
@@ -37,10 +39,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Optional<Employee> read(String id) {
         LOG.debug("Reading employee with id [{}]", id);
 
+        employeeRepository.findAll().forEach(o -> System.out.println(o.getEmployeeId()));
+
         Employee employee = employeeRepository.findByEmployeeId(id);
 
         if (employee == null) {
-            throw new RuntimeException("Invalid employeeId: " + id);
+            LOG.info("Invalid employeeId: [{}]", id);
+            return Optional.empty();
         }
 
         return Optional.of(employee);
@@ -51,5 +56,51 @@ public class EmployeeServiceImpl implements EmployeeService {
         LOG.debug("Updating employee [{}]", employee);
 
         return Optional.of(employeeRepository.save(employee));
+    }
+
+    @Override
+    public Optional<ReportingStructureModel> readReportingStructure(String id) {
+        LOG.debug("Reading report structure for employee with id [{}]", id);
+
+        Optional<Employee> optionalEmployee = read(id);
+
+        if (!optionalEmployee.isPresent()) {
+            LOG.debug("Employee with id [{}] not found", id);
+            return Optional.empty();
+        } else {
+            return Optional.of(new ReportingStructureModel(optionalEmployee.get(), countReportees(optionalEmployee.get())));
+        }
+    }
+
+    /**
+     * Performs a breadth first traversal against an Employee and its direct reportees and their
+     * direct reportees until no more direct reportees are found
+     *
+     * @param employee An Employee that contains a list of direct reportees
+     * @return An integer indicating the number of reportees that are under the
+     * original employee's chain of command
+     */
+    private int countReportees(Employee employee) {
+        LOG.debug("Counting reportees for employee with id [{}]", employee.getEmployeeId());
+
+        Queue<Employee> queue = new LinkedList<>();
+        HashSet<String> visited = new HashSet<>();
+        Employee curr;
+
+        queue.add(employee);
+
+        while (!queue.isEmpty()) {
+            curr = queue.poll();
+            visited.add(curr.getEmployeeId());
+
+            if (curr.getDirectReports() != null) {
+                queue.addAll(curr.getDirectReports().stream()
+                        .filter(e -> !visited.contains(e.getEmployeeId()))
+                        .collect(Collectors.toList()));
+            }
+
+        }
+
+        return visited.size() - 1;
     }
 }

@@ -9,15 +9,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/employee")
 public interface EmployeeController {
 
-    @PostMapping("/create")
+    @PostMapping
     ResponseEntity<Employee> create(@RequestBody Employee e);
 
-    @GetMapping("/read/{id}")
+    @GetMapping("/{id}")
     ResponseEntity<Employee> read(@PathVariable String id);
 
-    @PutMapping("/update")
+    @PutMapping("/{id}")
     ResponseEntity<Employee> update(@PathVariable String id, @RequestBody Employee e);
 
-    @GetMapping("/read/{id}/reporting")
+    @GetMapping("/{id}/reporting")
     ResponseEntity<ReportingStructureModel> readReportingStructure(@PathVariable String id);
 }

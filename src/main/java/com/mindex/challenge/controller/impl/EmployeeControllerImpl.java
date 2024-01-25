@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class EmployeeControllerImpl implements EmployeeController {
     private static final Logger LOG = LoggerFactory.getLogger(EmployeeControllerImpl.class);
@@ -22,18 +24,21 @@ public class EmployeeControllerImpl implements EmployeeController {
         this.employeeService = employeeService;
     }
 
+    @Override
     public ResponseEntity<Employee> create(Employee employee) {
         LOG.debug("Received employee create request for [{}]", employee);
 
         return new ResponseEntity<>(employeeService.create(employee).get(), HttpStatus.OK);
     }
 
+    @Override
     public ResponseEntity<Employee> read(String id) {
         LOG.debug("Received employee read request for id [{}]", id);
 
         return new ResponseEntity<>(employeeService.read(id).get(), HttpStatus.OK);
     }
 
+    @Override
     public ResponseEntity<Employee> update(String id, Employee employee) {
         LOG.debug("Received employee create request for id [{}] and employee [{}]", id, employee);
 
@@ -43,6 +48,12 @@ public class EmployeeControllerImpl implements EmployeeController {
 
     @Override
     public ResponseEntity<ReportingStructureModel> readReportingStructure(String id) {
-        return new ResponseEntity<>(HttpStatus.OK);
+        LOG.debug("Received employee reporting structure read requests for id [{}]", id);
+
+        Optional<ReportingStructureModel> opt = employeeService.readReportingStructure(id);
+
+        return opt.map(reportingStructureModel -> new ResponseEntity<>(reportingStructureModel, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+
     }
 }
