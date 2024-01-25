@@ -1,0 +1,19 @@
+- Changes I want to make
+	- Constructor injection - field injection breaks encapsulation, risk of null objects, can now use final fields, prevent circular dependencies,
+	- Fix misleading debug statements
+	- Create controller interface - easier/cleaner/more readable to manage annotations separately from implementation
+	- Modify controller annotations - move some path definitions
+	- change return values from service to optional - I don't want to handle null
+	- handle cases where id is empty and/or bad data from db or missing from data. use proper HTTP codes
+	- Tag @Id on data classes - save() method was additive, was not modifying existing
+	- DAO returns optional values instead of null
+- Potential edge cases not covered
+	- Task 1:
+		- When calculating structure, can we end up in an endless loop due to a circular relationship? That's why I have a "visited" hashSet instead of an accumulator
+		- Take another look at the data class config... I needed an @Id tag to ensure repo.save() was able to update existing entities instead of creating a new entity. Is there anything else? Non-nullable values?
+	- Task 2
+		- Compensation and Employee appear to be relational data, would a relational DB be better?
+		- Use JUnit5
+		- Date considerations... unix/epoch format. Dates and times and timezones should be a presentation layer problem. Minimize the risk of date format mismatches by using epoch time.
+	- Repository tests
+	- Java 9+ Optional.ifPresentOrElse()
