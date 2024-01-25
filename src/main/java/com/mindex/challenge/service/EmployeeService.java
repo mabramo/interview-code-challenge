@@ -1,5 +1,6 @@
 package com.mindex.challenge.service;
 
+import com.mindex.challenge.data.Compensation;
 import com.mindex.challenge.data.Employee;
 import com.mindex.challenge.model.ReportingStructureModel;
 
@@ -10,4 +11,6 @@ public interface EmployeeService {
     Optional<Employee> read(String id);
     Optional<Employee> update(Employee employee);
     Optional<ReportingStructureModel> readReportingStructure(String id);
+    Optional<Compensation> createCompensation(String id, Compensation compensation);
+    Optional<Compensation> readCompensation(String id);
 }

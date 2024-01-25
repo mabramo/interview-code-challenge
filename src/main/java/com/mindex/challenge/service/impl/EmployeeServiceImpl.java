@@ -1,6 +1,8 @@
 package com.mindex.challenge.service.impl;
 
+import com.mindex.challenge.dao.CompensationRepository;
 import com.mindex.challenge.dao.EmployeeRepository;
+import com.mindex.challenge.data.Compensation;
 import com.mindex.challenge.data.Employee;
 import com.mindex.challenge.model.ReportingStructureModel;
 import com.mindex.challenge.service.EmployeeService;
@@ -19,10 +21,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     private static final Logger LOG = LoggerFactory.getLogger(EmployeeServiceImpl.class);
 
     private final EmployeeRepository employeeRepository;
+    private final CompensationRepository compensationRepository;
 
     @Autowired
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, CompensationRepository compensationRepository) {
         this.employeeRepository = employeeRepository;
+        this.compensationRepository = compensationRepository;
+
     }
 
     @Override
@@ -69,6 +74,37 @@ public class EmployeeServiceImpl implements EmployeeService {
             return Optional.empty();
         } else {
             return Optional.of(new ReportingStructureModel(optionalEmployee.get(), countReportees(optionalEmployee.get())));
+        }
+    }
+
+    @Override
+    public Optional<Compensation> createCompensation(String id, Compensation compensation) {
+        LOG.debug("Creating compensation for employee with id [{}]", id);
+
+        Employee employee = employeeRepository.findByEmployeeId(id);
+
+        if (employee == null) {
+            LOG.info("Employee with id [{}] was not found. Compensation will not be created.", id);
+            return Optional.empty();
+        } else {
+            LOG.debug("Found employee with id [{}] while creating compensation", id);
+            compensation = compensationRepository.insert(compensation);
+            return Optional.of(compensation);
+        }
+    }
+
+    @Override
+    public Optional<Compensation> readCompensation(String id) {
+        LOG.debug("Reading compensation for employee with id [{}]", id);
+
+        Compensation compensation = compensationRepository.findByEmployeeId(id);
+
+        if(compensation == null){
+            LOG.info("Compensation information for employee with id [{}] not found", id);
+            return Optional.empty();
+        } else {
+            LOG.debug("Found compensation for employee with id [{}]", id);
+            return Optional.of(compensation);
         }
     }
 

@@ -1,6 +1,7 @@
 package com.mindex.challenge.controller.impl;
 
 import com.mindex.challenge.controller.EmployeeController;
+import com.mindex.challenge.data.Compensation;
 import com.mindex.challenge.data.Employee;
 import com.mindex.challenge.model.ReportingStructureModel;
 import com.mindex.challenge.service.EmployeeService;
@@ -28,7 +29,7 @@ public class EmployeeControllerImpl implements EmployeeController {
     public ResponseEntity<Employee> create(Employee employee) {
         LOG.debug("Received employee create request for [{}]", employee);
 
-        return new ResponseEntity<>(employeeService.create(employee).get(), HttpStatus.OK);
+        return new ResponseEntity<>(employeeService.create(employee).get(), HttpStatus.CREATED);
     }
 
     @Override
@@ -55,5 +56,25 @@ public class EmployeeControllerImpl implements EmployeeController {
         return opt.map(reportingStructureModel -> new ResponseEntity<>(reportingStructureModel, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 
+    }
+
+    @Override
+    public ResponseEntity<Compensation> createCompensation(String id, Compensation compensation) {
+        LOG.debug("Received compensation create request for id [{}]", id);
+
+        Optional<Compensation> opt = employeeService.createCompensation(id, compensation);
+
+        return opt.map(comp -> new ResponseEntity<>(comp, HttpStatus.CREATED))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.FORBIDDEN));
+    }
+
+    @Override
+    public ResponseEntity<Compensation> readCompensation(String id) {
+        LOG.debug("Received compensation read request for id [{}]", id);
+
+        Optional<Compensation> opt = employeeService.readCompensation(id);
+
+        return opt.map(comp -> new ResponseEntity<>(comp, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }
