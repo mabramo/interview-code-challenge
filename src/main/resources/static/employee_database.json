@@ -49,5 +49,12 @@
     "lastName" : "Harrison",
     "position" : "Developer III",
     "department" : "Engineering"
+  },
+  {
+    "employeeId" : "newguy",
+    "firstName" : "New",
+    "lastName" : "Guy",
+    "position" : "Junior Dev",
+    "department" : "Engineering"
   }
 ]

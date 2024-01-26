@@ -1,7 +1,6 @@
 package com.mindex.challenge.controller.impl;
 
 import com.mindex.challenge.controller.EmployeeController;
-import com.mindex.challenge.data.Compensation;
 import com.mindex.challenge.data.Employee;
 import com.mindex.challenge.model.ReportingStructureModel;
 import com.mindex.challenge.service.EmployeeService;
@@ -51,10 +50,8 @@ public class EmployeeControllerImpl implements EmployeeController {
     public ResponseEntity<ReportingStructureModel> readReportingStructure(String id) {
         LOG.debug("Received employee reporting structure read requests for id [{}]", id);
 
-        Optional<ReportingStructureModel> opt = employeeService.readReportingStructure(id);
+        Optional<ReportingStructureModel> opt = employeeService.buildReportingStructure(id);
 
-        return opt.map(reportingStructureModel -> new ResponseEntity<>(reportingStructureModel, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-
+        return opt.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

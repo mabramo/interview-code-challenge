@@ -9,6 +9,7 @@ import com.mindex.challenge.service.EmployeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -41,8 +42,8 @@ public class CompensationServiceImpl implements CompensationService {
             LOG.debug("Found employee with id [{}] while creating compensation", compensation.getEmployeeId());
             try {
                 compensation = compensationRepository.insert(compensation);
-            } catch (Exception e) {
-                LOG.error("Found duplicate key [{}] in compensation repository", compensation.getEmployeeId());
+            } catch (DuplicateKeyException e) {
+                LOG.error("Found duplicate key [{}] in compensation repository, [{}]", compensation.getEmployeeId(), e.getMessage());
                 return Optional.empty();
             }
 

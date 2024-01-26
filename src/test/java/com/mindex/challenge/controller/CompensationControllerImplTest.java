@@ -46,7 +46,7 @@ public class CompensationControllerImplTest {
 
     @Test
     public void createCompensationFailedTest(){
-        String testId = "id-a";
+        String testId = "id-does-not-exist";
         Compensation testComp = new Compensation();
         testComp.setEmployeeId(testId);
         testComp.setSalary(753);
@@ -55,7 +55,7 @@ public class CompensationControllerImplTest {
         Mockito.when(compensationService.createCompensation(testComp)).thenReturn(Optional.empty());
 
         ResponseEntity<Compensation> result = compensationController.createCompensation(testComp);
-        assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
     }
 
     @Test
@@ -77,7 +77,7 @@ public class CompensationControllerImplTest {
 
     @Test
     public void readCompensationFailedTest(){
-        String testId = "id-a";
+        String testId = "id-does-not-exist";
         Compensation testComp = new Compensation();
         testComp.setEmployeeId(testId);
         testComp.setSalary(753);

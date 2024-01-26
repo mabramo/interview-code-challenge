@@ -6,11 +6,11 @@ import com.mindex.challenge.data.Employee;
 import com.mindex.challenge.service.CompensationService;
 import com.mindex.challenge.service.EmployeeService;
 
-import de.bwaldvogel.mongo.exception.DuplicateKeyError;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
@@ -28,7 +28,6 @@ public class CompensationServiceImplTest {
 
     @Before
     public void setup() {
-
         employeeService = Mockito.mock(EmployeeService.class);
         compensationRepository = Mockito.mock(CompensationRepository.class);
 
@@ -51,7 +50,7 @@ public class CompensationServiceImplTest {
 
     @Test
     public void readCompensationTestNotPresent() {
-        String testId = "id-a";
+        String testId = "id-does-not-exist";
         Mockito.when(compensationRepository.findByEmployeeId(anyString())).thenReturn(Optional.empty());
 
         Optional<Compensation> result = compensationService.readCompensation(testId);
@@ -76,13 +75,11 @@ public class CompensationServiceImplTest {
 
         assertTrue(result.isPresent());
         assertEquals(testId, result.get().getEmployeeId());
-
     }
 
     @Test
-    public void createCompensationDuplicateTest(){
-
-        String testId = "id-a";
+    public void createCompensationDuplicateTest() {
+        String testId = "id-duplicate-entry";
         Employee testEmployee = new Employee();
         testEmployee.setEmployeeId(testId);
 
@@ -91,24 +88,15 @@ public class CompensationServiceImplTest {
         Compensation testComp = new Compensation();
         testComp.setEmployeeId(testId);
 
-        Mockito.when(compensationRepository.insert(Mockito.any(Compensation.class))).thenReturn(testComp);
-
+        Mockito.when(compensationRepository.insert(Mockito.any(Compensation.class))).thenThrow(DuplicateKeyException.class);
         Optional<Compensation> result = compensationService.createCompensation(testComp);
 
-        assertTrue(result.isPresent());
-        assertEquals(testId, result.get().getEmployeeId());
-
-        Mockito.when(compensationRepository.insert(Mockito.any(Compensation.class))).thenThrow(DuplicateKeyError.class);
-
-        result = compensationService.createCompensation(testComp);
-
         assertFalse(result.isPresent());
-
     }
 
     @Test
     public void createCompensationTestNoEmployee() {
-        String testId = "id-a";
+        String testId = "id-does-not-exist";
 
         Mockito.when(employeeService.read(testId)).thenReturn(Optional.empty());
 
@@ -118,7 +106,6 @@ public class CompensationServiceImplTest {
         Optional<Compensation> result = compensationService.createCompensation(testComp);
 
         assertFalse(result.isPresent());
-
     }
 
 }

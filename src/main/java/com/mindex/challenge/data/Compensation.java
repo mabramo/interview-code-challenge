@@ -8,7 +8,7 @@ public class Compensation {
 
     @Id
     private String employeeId;
-    private int salary;
+    private double salary;
     private Date effectiveDate;
 
     public String getEmployeeId() {
@@ -19,11 +19,11 @@ public class Compensation {
         this.employeeId = employeeId;
     }
 
-    public int getSalary() {
+    public double getSalary() {
         return salary;
     }
 
-    public void setSalary(int salary) {
+    public void setSalary(double salary) {
         this.salary = salary;
     }
 

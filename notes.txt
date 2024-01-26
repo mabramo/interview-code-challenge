@@ -7,13 +7,19 @@
 	- handle cases where id is empty and/or bad data from db or missing from data. use proper HTTP codes
 	- Tag @Id on data classes - save() method was additive, was not modifying existing
 	- DAO returns optional values instead of null
-- Potential edge cases not covered
+- Potential Improvements / Edge Cases
 	- Task 1:
 		- When calculating structure, can we end up in an endless loop due to a circular relationship? That's why I have a "visited" hashSet instead of an accumulator
 		- Take another look at the data class config... I needed an @Id tag to ensure repo.save() was able to update existing entities instead of creating a new entity. Is there anything else? Non-nullable values?
 	- Task 2
+	    - create() method returns Optional() when employee id not found and when duplicate key entry is found. The controller only knows that the optional
+	        is empty, therefore we can only return two types of responses from the controller - a CREATE or a BAD_REQUEST. But what if we wanted to return a 404
+	        when employee not found and a BAD_REQUEST when a duplicate is found?
 		- Compensation and Employee appear to be relational data, would a relational DB be better?
-		- Use JUnit5
-		- Date considerations... unix/epoch format. Dates and times and timezones should be a presentation layer problem. Minimize the risk of date format mismatches by using epoch time.
+		- Date considerations... can we rely on the date complying with ISO 8106?
 	- Repository tests
 	- Java 9+ Optional.ifPresentOrElse()
+	- JUnit5, extended tagging. "DisplayName" Tests are the best type of documentation
+	- Add reporting service
+	- Do not return expose data objects from controller, instead implement models (DTO, data transfer object)
+	- Consider experimenting with @ControllerAdvice and @ExceptionHandler to control behavior for any exception that is not explicitly handled by the service

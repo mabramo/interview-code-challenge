@@ -10,11 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Optional;
-import java.util.Queue;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,7 +45,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Optional<Employee> employee = employeeRepository.findByEmployeeId(id);
 
         if (!employee.isPresent()) {
-            LOG.info("Invalid employeeId: [{}]", id);
+            LOG.info("Invalid employeeId: [{}] not found in employee datastore", id);
             return Optional.empty();
         } else {
             return employee;
@@ -64,7 +60,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Optional<ReportingStructureModel> readReportingStructure(String id) {
+    public Optional<ReportingStructureModel> buildReportingStructure(String id) {
         LOG.debug("Reading report structure for employee with id [{}]", id);
 
         Optional<Employee> optionalEmployee = read(id);
@@ -90,22 +86,32 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Queue<Employee> queue = new LinkedList<>();
         HashSet<String> visited = new HashSet<>();
-        Employee curr;
+        Employee currentEmployee;
 
         queue.add(employee);
 
         while (!queue.isEmpty()) {
-            curr = queue.poll();
-            visited.add(curr.getEmployeeId());
+            currentEmployee = queue.poll();
+            LOG.debug("Polling employee [{}] from queue while counting reportees", currentEmployee.getEmployeeId());
 
-            if (curr.getDirectReports() != null) {
-                queue.addAll(curr.getDirectReports().stream()
-                        .filter(e -> !visited.contains(e.getEmployeeId()))
-                        .collect(Collectors.toList()));
+            Optional<Employee> optEmployee = read(currentEmployee.getEmployeeId());
+
+            if(optEmployee.isPresent()){
+                currentEmployee = optEmployee.get();
+                visited.add(currentEmployee.getEmployeeId());
+
+                if (currentEmployee.getDirectReports() != null) {
+                    queue.addAll(currentEmployee.getDirectReports().stream()
+                            .filter(e -> !visited.contains(e.getEmployeeId()))
+                            .collect(Collectors.toList()));
+                }
+            } else {
+                LOG.debug("Employee id [{}] found in direct reports, but not in employee datastore", currentEmployee.getEmployeeId());
             }
-
         }
 
-        return visited.size() - 1;
+        //remove top level manager from "visited" to get accurate count of reportees
+        visited.remove(employee.getEmployeeId());
+        return visited.size();
     }
 }

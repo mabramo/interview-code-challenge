@@ -12,7 +12,7 @@ public interface CompensationController {
      * Create a compensation entry in the compensation repository for an already existing employee
      *
      * @param compensation a compensation representation
-     * @return http CREATED and the compensation object if successful, http FORBIDDEN if employee id is not found
+     * @return http CREATED and the compensation object if successful, http BAD_REQUEST if employee id is not found
      */
     @PostMapping
     ResponseEntity<Compensation> createCompensation(@RequestBody Compensation compensation);

@@ -29,7 +29,7 @@ public class CompensationControllerImpl implements CompensationController {
         Optional<Compensation> opt = compensationService.createCompensation(compensation);
 
         return opt.map(comp -> new ResponseEntity<>(comp, HttpStatus.CREATED))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.FORBIDDEN));
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @Override
@@ -38,8 +38,7 @@ public class CompensationControllerImpl implements CompensationController {
 
         Optional<Compensation> opt = compensationService.readCompensation(id);
 
-        return opt.map(comp -> new ResponseEntity<>(comp, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return opt.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 }
